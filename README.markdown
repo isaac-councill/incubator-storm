@@ -1,12 +1,24 @@
-Storm is a distributed realtime computation system. Similar to how Hadoop provides a set of general primitives for doing batch processing, Storm provides a set of general primitives for doing realtime computation. Storm is simple, can be used with any programming language, [is used by many companies](https://github.com/nathanmarz/storm/wiki/Powered-By), and is a lot of fun to use!
+This is an experimental fork to enable SSL communication among workers. It is based on the 0.9.0 storm branch for compatibility with storm-mesos, so edits will be found in the 0.9.0-ssl branch. To play with it, clone the 0.9.0-ssl branch and set the following configuration:
 
-The [Rationale page](https://github.com/nathanmarz/storm/wiki/Rationale) on the wiki explains what Storm is and why it was built. [This presentation](http://vimeo.com/40972420) is also a good introduction to the project.
+storm.messaging.transport: "backtype.storm.messaging.netty.Context"
+storm.keystore.file: "your_keystore.jks"  # Must be JKS.
+storm.keystore.password: your_keystore_pass
+storm.certificate.password: your_cert_pass
+
+---
+
+Storm is a distributed realtime computation system. Similar to how Hadoop provides a set of general primitives for doing batch processing, Storm provides a set of general primitives for doing realtime computation. Storm is simple, can be used with any programming language, [is used by many companies](http://storm-project.net/documentation/Powered-By.html), and is a lot of fun to use!
+
+The [Rationale page](http://storm-project.net/documentation/Rationale.html) explains what Storm is and why it was built. [This presentation](http://vimeo.com/40972420) is also a good introduction to the project.
 
 Storm has a website at [storm-project.net](http://storm-project.net). Follow [@stormprocessor](https://twitter.com/stormprocessor) on Twitter for updates on the project.
 
 ## Documentation
 
-Documentation and tutorials can be found on the [Storm wiki](http://github.com/nathanmarz/storm/wiki).
+Documentation and tutorials can be found on the [Storm website](http://storm-project.net/documentation/Home.html).
+
+Developers and contributors should also take a look at our [Developer documentation](DEVELOPER.md).
+
 
 ## Getting help
 
@@ -17,14 +29,14 @@ Storm users should send messages and subscribe to [user@storm.incubator.apache.o
 
 You can subscribe to this list by sending an email to [user-subscribe@storm.incubator.apache.org](mailto:user-subscribe@storm.incubator.apache.org). Likewise, you can cancel a subscription by sending an email to [user-unsubscribe@storm.incubator.apache.org](mailto:user-unsubscribe@storm.incubator.apache.org).
 
-You can view the archives of the mailing list [here](http://mail-archives.apache.org/mod_mbox/incubator-storm-user/).
+You can also [browse the archives of the storm-user mailing list](http://mail-archives.apache.org/mod_mbox/incubator-storm-user/).
 
 ### Storm Developers
 Storm developers should send messages and subscribe to [dev@storm.incubator.apache.org](mailto:dev@storm.incubator.apache.org).
 
 You can subscribe to this list by sending an email to [dev-subscribe@storm.incubator.apache.org](mailto:dev-subscribe@storm.incubator.apache.org). Likewise, you can cancel a subscription by sending an email to [dev-unsubscribe@storm.incubator.apache.org](mailto:dev-unsubscribe@storm.incubator.apache.org).
 
-You can view the archives of the mailing list [here](http://mail-archives.apache.org/mod_mbox/incubator-storm-dev/).
+You can also [browse the archives of the storm-dev mailing list](http://mail-archives.apache.org/mod_mbox/incubator-storm-dev/).
 
 ### Which list should I send/subscribe to?
 If you are using a pre-built binary distribution of Storm, then chances are you should send questions, comments, storm-related announcements, etc. to [user@storm.apache.incubator.org](user@storm.apache.incubator.org). 
@@ -41,12 +53,23 @@ You can also come to the #storm-user room on [freenode](http://freenode.net/). Y
 
 ## License
 
-The use and distribution terms for this software are covered by the
-Eclipse Public License 1.0 (http://opensource.org/licenses/eclipse-1.0.php)
-which can be found in the file LICENSE.html at the root of this distribution.
-By using this software in any fashion, you are agreeing to be bound by
-the terms of this license.
-You must not remove this notice, or any other, from this software.
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied.  See the License for the
+specific language governing permissions and limitations
+under the License.
+
 
 ## Project lead
 
@@ -60,6 +83,9 @@ You must not remove this notice, or any other, from this software.
 * Flip Kromer ([@mrflip](https://github.com/mrflip))
 * David Lao ([@davidlao2k](https://github.com/davidlao2k))
 * P. Taylor Goetz ([@ptgoetz](https://github.com/ptgoetz))
+* Derek Dagit ([@d2r](https://github.com/d2r))
+* Robert Evans ([@revans2](https://github.com/revans2))
+* Michael G. Noll ([@miguno](https://github.com/miguno))
 
 ## Contributors
 
@@ -94,9 +120,7 @@ You must not remove this notice, or any other, from this software.
 * Bryan Peterson ([@Lazyshot](https://github.com/Lazyshot))
 * Sam Ritchie ([@sritchie](https://github.com/sritchie))
 * Stuart Anderson ([@emblem](https://github.com/emblem))
-* Robert Evans ([@revans2](https://github.com/revans2)) 
 * Lorcan Coyle ([@lorcan](https://github.com/lorcan))
-* Derek Dagit ([@d2r](https://github.com/d2r))
 * Andrew Olson ([@noslowerdna](https://github.com/noslowerdna))
 * Gavin Li ([@lyogavin](https://github.com/lyogavin))
 * Tudor Scurtu ([@tscurtu](https://github.com/tscurtu))
@@ -104,6 +128,36 @@ You must not remove this notice, or any other, from this software.
 * Sean Melody ([@srmelody](https://github.com/srmelody))
 * Jake Donham ([@jaked](https://github.com/jaked))
 * Ankit Toshniwal ([@ankitoshniwal](https://github.com/ankitoshniwal))
+* Adam Lewis ([@supercargo](https://github.com/supercargo))
+* Alexander Yerenkow ([@yerenkow](https://github.com/yerenkow))
+* Brenden Matthews ([@brndnmtthws](https://github.com/brdnmtthws))
+* Bryan Baugher ([@bbaugher](https://github.com/bbaugher))
+* Danijel Schiavuzzi ([@dschiavu](https://github.com/dschiavu))
+* David James ([@xpe](https://github.com/xpe))
+* David Losada ([@tuxpiper](https://github.com/tuxpiper))
+* Francois Dang Ngoc ([@darthbear](https://github.com/darthbear))
+* Gangrui Li ([@davidlgr](https://github.com/davidlgr))
+* John Gilmore ([@jsgilmore](https://github.com/jsgilmore))
+* Julien Nioche ([@jnioche](https://github.com/jnioche))
+* Kishor Patil ([@kishorvpatil](https://github.com/kishorvpatil))
+* Kyle Nusbaum ([@knusbaum](https://github.com/knusbaum))
+* Muneyuki Noguchi ([@mnogu](https://github.com/mnogu))
+* Niels Basjes ([@nielsbasjes](https://github.com/nielsbasjes))
+* Padma Priya Chitturi ([PadmaCh](https://issues.apache.org/jira/secure/ViewProfile.jspa?name=PadmaCh))
+* Prabeesh K ([@prabeesh](https://github.com/prabeesh))
+* Sean Zhong ([@clockfly](https://github.com/clockfly))
+* Sriharsha Chintalapani ([@harshach](https://github.com/harshach))
+* Srinivas Prasad Gumdelli ([@srinivasgumdelli](https://github.com/srinivasgumdelli))
+* Steven Phung ([@stphung](https://github.com/stphung))
+* Suresh Srinivas ([@sureshms](https://github.com/sureshms))
+* thinker0 ([@thinker0](https://github.com/thinker0))
+* Troy Ding ([@troyding](https://github.com/troyding)) 
+* Aaron Zimmerman ([@aaronzimmerman](https://github.com/aaronzimmerman))
+* Albert Chu ([@chu11](https://github.com/chu11))
+* Krystian Nowak ([@krystiannowak](https://github.com/krystiannowak))
+* Parth-Brahmbhatt ([@Parth-Brahmbhatt](https://github.com/Parth-Brahmbhatt))
+* Adrian Petrescu ([@apetresc](https://github.com/apetresc))
+* DashengJu ([@dashengju](https://github.com/dashengju))
 
 ## Acknowledgements
 
