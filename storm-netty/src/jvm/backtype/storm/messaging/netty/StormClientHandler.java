@@ -11,6 +11,7 @@ import org.jboss.netty.channel.ChannelStateEvent;
 import org.jboss.netty.channel.ExceptionEvent;
 import org.jboss.netty.channel.MessageEvent;
 import org.jboss.netty.channel.SimpleChannelUpstreamHandler;
+import org.jboss.netty.handler.ssl.SslHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -28,6 +29,10 @@ public class StormClientHandler extends SimpleChannelUpstreamHandler  {
 
     @Override
     public void channelConnected(ChannelHandlerContext ctx, ChannelStateEvent event) {
+	//begin ssl handshake
+	SslHandler sslHandler = ctx.getPipeline().get(SslHandler.class);
+	sslHandler.handshake();
+
         //register the newly established channel
         Channel channel = event.getChannel();
         client.setChannel(channel);

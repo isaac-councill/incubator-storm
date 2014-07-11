@@ -32,7 +32,7 @@ public class Context implements IContext {
     /**
      * establish a connection to a remote server
      */
-    public IConnection connect(String storm_id, String host, int port) {        
+    public IConnection connect(String storm_id, String host, int port) {
         IConnection client =  new Client(storm_conf, host, port);
         connections.add(client);
         return client;

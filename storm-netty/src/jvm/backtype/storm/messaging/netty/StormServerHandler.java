@@ -3,11 +3,14 @@ package backtype.storm.messaging.netty;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.jboss.netty.channel.Channel;
+import org.jboss.netty.channel.ChannelFuture;
+import org.jboss.netty.channel.ChannelFutureListener;
 import org.jboss.netty.channel.ChannelHandlerContext;
 import org.jboss.netty.channel.ChannelStateEvent;
 import org.jboss.netty.channel.ExceptionEvent;
 import org.jboss.netty.channel.MessageEvent;
 import org.jboss.netty.channel.SimpleChannelUpstreamHandler;
+import org.jboss.netty.handler.ssl.SslHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,7 +28,13 @@ class StormServerHandler extends SimpleChannelUpstreamHandler  {
     
     @Override
     public void channelConnected(ChannelHandlerContext ctx, ChannelStateEvent e) {
-        server.addChannel(e.getChannel());
+	final SslHandler sslHandler = ctx.getPipeline().get(SslHandler.class);
+	try{
+	    ChannelFuture handshakeFuture = sslHandler.handshake();
+	    handshakeFuture.addListener(new Greeter(sslHandler, server));
+	}catch(Exception exc) {
+	    exc.printStackTrace();
+	}
     }
     
     @Override
@@ -54,6 +63,26 @@ class StormServerHandler extends SimpleChannelUpstreamHandler  {
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, ExceptionEvent e) {
+	e.getCause().printStackTrace();
         server.closeChannel(e.getChannel());
+    }
+
+    private static final class Greeter implements ChannelFutureListener {
+	
+	private final SslHandler sslHandler;
+	private final Server server;
+
+	Greeter(SslHandler sslHandler, Server server) {
+	    this.sslHandler = sslHandler;
+	    this.server = server;
+	}
+
+	public void operationComplete(ChannelFuture future) throws Exception {
+	    if (future.isSuccess()) {
+		server.addChannel(future.getChannel());
+	    } else {
+		future.getChannel().close();
+	    }
+	}
     }
 }

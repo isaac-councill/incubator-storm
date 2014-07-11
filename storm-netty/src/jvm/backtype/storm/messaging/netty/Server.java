@@ -8,6 +8,8 @@ import java.util.concurrent.Executors;
 import org.jboss.netty.bootstrap.ServerBootstrap;
 import org.jboss.netty.channel.Channel;
 import org.jboss.netty.channel.ChannelFactory;
+import org.jboss.netty.channel.ChannelFuture;
+import org.jboss.netty.channel.ChannelFutureListener;
 import org.jboss.netty.channel.group.ChannelGroup;
 import org.jboss.netty.channel.group.DefaultChannelGroup;
 import org.jboss.netty.channel.socket.nio.NioServerSocketChannelFactory;
@@ -99,8 +101,13 @@ class Server implements IConnection {
      * @param channel
      */
     protected void closeChannel(Channel channel) {
-        channel.close().awaitUninterruptibly();
-        allChannels.remove(channel);
+        ChannelFuture future = channel.close();
+	future.addListener(new ChannelFutureListener() {
+		public void operationComplete(ChannelFuture future)
+		        throws Exception {
+		    allChannels.remove(future.getChannel());
+		}
+	    });
     }
 
     /**
