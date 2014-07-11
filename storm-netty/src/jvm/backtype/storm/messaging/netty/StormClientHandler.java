@@ -11,6 +11,7 @@ import org.jboss.netty.channel.ChannelStateEvent;
 import org.jboss.netty.channel.ExceptionEvent;
 import org.jboss.netty.channel.MessageEvent;
 import org.jboss.netty.channel.SimpleChannelUpstreamHandler;
+import org.jboss.netty.handler.ssl.SslHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -18,8 +19,8 @@ public class StormClientHandler extends SimpleChannelUpstreamHandler  {
     private static final Logger LOG = LoggerFactory.getLogger(StormClientHandler.class);
     private Client client;
     private AtomicBoolean being_closed;
-    long start_time; 
-    
+    long start_time;
+
     StormClientHandler(Client client) {
         this.client = client;
         being_closed = new AtomicBoolean(false);
@@ -28,11 +29,15 @@ public class StormClientHandler extends SimpleChannelUpstreamHandler  {
 
     @Override
     public void channelConnected(ChannelHandlerContext ctx, ChannelStateEvent event) {
+        //begin ssl handshake
+        SslHandler sslHandler = ctx.getPipeline().get(SslHandler.class);
+        sslHandler.handshake();
+
         //register the newly established channel
         Channel channel = event.getChannel();
         client.setChannel(channel);
         LOG.debug("connection established to a remote host");
-        
+
         //send next request
         try {
             sendRequests(channel, client.takeMessages());
@@ -44,7 +49,7 @@ public class StormClientHandler extends SimpleChannelUpstreamHandler  {
     @Override
     public void messageReceived(ChannelHandlerContext ctx, MessageEvent event) {
         LOG.debug("send/recv time (ms): {}", (System.currentTimeMillis() - start_time));
-        
+
         //examine the response message from server
         ControlMessage msg = (ControlMessage)event.getMessage();
         if (msg==ControlMessage.FAILURE_RESPONSE)
@@ -83,8 +88,7 @@ public class StormClientHandler extends SimpleChannelUpstreamHandler  {
         //write request into socket channel
         ChannelFuture future = channel.write(requests);
         future.addListener(new ChannelFutureListener() {
-            public void operationComplete(ChannelFuture future)
-                    throws Exception {
+            public void operationComplete(ChannelFuture future) throws Exception {
                 if (!future.isSuccess()) {
                     LOG.info("failed to send requests:", future.getCause());
                     future.getChannel().close();
@@ -102,7 +106,7 @@ public class StormClientHandler extends SimpleChannelUpstreamHandler  {
         Throwable cause = event.getCause();
         if (!(cause instanceof ConnectException)) {
             LOG.info("Connection failed:", cause);
-        } 
+        }
         if (!being_closed.get()) {
             client.setChannel(null);
             client.reconnect();

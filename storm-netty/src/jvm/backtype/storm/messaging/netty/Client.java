@@ -12,6 +12,8 @@ import java.util.concurrent.atomic.AtomicReference;
 import org.jboss.netty.bootstrap.ClientBootstrap;
 import org.jboss.netty.channel.Channel;
 import org.jboss.netty.channel.ChannelFactory;
+import org.jboss.netty.channel.ChannelFuture;
+import org.jboss.netty.channel.ChannelFutureListener;
 import org.jboss.netty.channel.socket.nio.NioClientSocketChannelFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -65,7 +67,19 @@ class Client implements IConnection {
 
         // Start the connection attempt.
         remote_addr = new InetSocketAddress(host, port);
-        bootstrap.connect(remote_addr);
+        safeConnect();
+    }
+
+    void safeConnect() {
+        ChannelFuture future = bootstrap.connect(remote_addr);
+        future.addListener(new ChannelFutureListener() {
+            public void operationComplete(ChannelFuture future) throws Exception {
+                if (!future.isSuccess()) {
+                    future.getCause().printStackTrace();
+                    throw new RuntimeException("Unable to connect");
+                }
+            }
+        });
     }
 
     /**
@@ -77,7 +91,7 @@ class Client implements IConnection {
             if (tried_count <= max_retries) {
                 Thread.sleep(getSleepTimeMs());
                 LOG.info("Reconnect ... [{}]", tried_count);
-                bootstrap.connect(remote_addr);
+                safeConnect();
                 LOG.debug("connection started...");
             } else {
                 LOG.warn("Remote address is not reachable. We will close this client.");
@@ -199,7 +213,3 @@ class Client implements IConnection {
     }
 
 }
-
-
-
-
