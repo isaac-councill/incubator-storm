@@ -1,3 +1,11 @@
+This is an experimental fork to enable SSL communication among workers. It is based on the 0.9.0 storm branch for compatibility with storm-mesos, so edits will be found in the 0.9.0-ssl branch. To play with it, clone the 0.9.0-ssl branch and set the following configuration:
+
+storm.messaging.transport: "backtype.storm.messaging.netty.Context"
+storm.keystore.file: "your_keystore.jks"  # Must be JKS.
+storm.keystore.password: your_keystore_pass
+storm.certificate.password: your_cert_pass
+
+
 Storm is a distributed realtime computation system. Similar to how Hadoop provides a set of general primitives for doing batch processing, Storm provides a set of general primitives for doing realtime computation. Storm is simple, can be used with any programming language, [is used by many companies](http://storm-project.net/documentation/Powered-By.html), and is a lot of fun to use!
 
 The [Rationale page](http://storm-project.net/documentation/Rationale.html) explains what Storm is and why it was built. [This presentation](http://vimeo.com/40972420) is also a good introduction to the project.
