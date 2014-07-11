@@ -60,7 +60,7 @@ class Server implements IConnection {
     }
 
     /**
-     * enqueue a received message 
+     * enqueue a received message
      * @param message
      * @throws InterruptedException
      */
@@ -68,12 +68,12 @@ class Server implements IConnection {
         message_queue.put(message);
         LOG.debug("message received with task: {}, payload size: {}", message.task(), message.message().length);
     }
-    
+
     /**
      * fetch a message from message queue synchronously (flags != 1) or asynchronously (flags==1)
      */
     public TaskMessage recv(int flags)  {
-        if ((flags & 0x01) == 0x01) { 
+        if ((flags & 0x01) == 0x01) {
             //non-blocking
             return message_queue.poll();
         } else {
@@ -95,26 +95,25 @@ class Server implements IConnection {
     protected void addChannel(Channel channel) {
         allChannels.add(channel);
     }
-    
+
     /**
      * close a channel
      * @param channel
      */
     protected void closeChannel(Channel channel) {
         ChannelFuture future = channel.close();
-	future.addListener(new ChannelFutureListener() {
-		public void operationComplete(ChannelFuture future)
-		        throws Exception {
-		    allChannels.remove(future.getChannel());
-		}
-	    });
+        future.addListener(new ChannelFutureListener() {
+            public void operationComplete(ChannelFuture future) throws Exception {
+                allChannels.remove(future.getChannel());
+            }
+        });
     }
 
     /**
      * close all channels, and release resources
      */
     public synchronized void close() {
-        if (allChannels != null) {  
+        if (allChannels != null) {
             allChannels.close().awaitUninterruptibly();
             factory.releaseExternalResources();
             allChannels = null;

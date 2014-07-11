@@ -9,7 +9,7 @@
   :profiles {:release {}}
   :jvm-opts ["-Djava.library.path=/usr/local/lib:/opt/local/lib:/usr/lib",
              "-Dstorm.keystore.file=test_keystore.jks",
-	     "-Dstorm.keystore.password=secret",
-	     "-Dstorm.certificate.password=secret"]
+             "-Dstorm.keystore.password=secret",
+             "-Dstorm.certificate.password=secret"]
   :target-path "target"
   :aot :all))

@@ -67,21 +67,20 @@ class Client implements IConnection {
 
         // Start the connection attempt.
         remote_addr = new InetSocketAddress(host, port);
-	safeConnect();
+        safeConnect();
     }
 
     void safeConnect() {
         ChannelFuture future = bootstrap.connect(remote_addr);
-	future.addListener(new ChannelFutureListener() {
-		public void operationComplete(ChannelFuture future) 
-		        throws Exception {
-		    if (!future.isSuccess()) {
-			future.getCause().printStackTrace();
-			throw new RuntimeException("Unable to connect");
-		    }
-		}
-	    });
-    }	
+        future.addListener(new ChannelFutureListener() {
+            public void operationComplete(ChannelFuture future) throws Exception {
+                if (!future.isSuccess()) {
+                    future.getCause().printStackTrace();
+                    throw new RuntimeException("Unable to connect");
+                }
+            }
+        });
+    }
 
     /**
      * We will retry connection with exponential back-off policy
@@ -92,7 +91,7 @@ class Client implements IConnection {
             if (tried_count <= max_retries) {
                 Thread.sleep(getSleepTimeMs());
                 LOG.info("Reconnect ... [{}]", tried_count);
-		safeConnect();
+                safeConnect();
                 LOG.debug("connection started...");
             } else {
                 LOG.warn("Remote address is not reachable. We will close this client.");
@@ -214,7 +213,3 @@ class Client implements IConnection {
     }
 
 }
-
-
-
-
